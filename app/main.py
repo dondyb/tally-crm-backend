@@ -11,11 +11,13 @@ from sqlalchemy.orm import Session, selectinload
 from . import schemas
 from .db import Base, SessionLocal, engine, get_session
 from .models import DEAL_STAGES, OPEN_STAGES, Activity, Company, Contact, Deal
+from .netcheck import report as netcheck_report
 from .seed import seed_if_empty
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    netcheck_report()
     Base.metadata.create_all(engine)
     with SessionLocal() as session:
         seed_if_empty(session)
